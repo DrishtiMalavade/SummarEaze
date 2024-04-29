@@ -3,98 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Live Transcript Recorder</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-
-        #output {
-            margin-top: 20px;
-            white-space: pre-line;
-            text-align: center;
-        }
-
-    </style>
+    <link rel="stylesheet" href="static/transcript.css">
 </head>
 <body>
     <h1>Live Transcript Recorder</h1>
     <button id="start-btn">Start Recording</button>
     <button id="stop-btn">Stop Recording</button>
     <div id="output"></div>
-    
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const startBtn = document.getElementById("start-btn");
-            const stopBtn = document.getElementById("stop-btn");
-            const outputDiv = document.getElementById("output");
-
-            let recognition = new webkitSpeechRecognition();
-            recognition.continuous = true;
-            recognition.interimResults = false;
-            recognition.lang = 'en-US';
-
-            let transcript = "";
-
-            startBtn.addEventListener("click", function() {
-                startBtn.disabled = true;
-                stopBtn.disabled = false;
-
-                outputDiv.innerHTML = "Listening...";
-                outputDiv.innerHTML += "<br>"; // Add a line break
-
-                recognition.start();
-            });
-
-            stopBtn.addEventListener("click", function() {
-                startBtn.disabled = false;
-                stopBtn.disabled = true;
-
-                recognition.stop();
-                outputDiv.innerHTML += "<br>Recording stopped.";
-            });
-
-            recognition.onresult = function(event) {
-                transcript += event.results[0][0].transcript + " ";
-                outputDiv.innerHTML = transcript;
-            };
-
-            recognition.onerror = function(event) {
-                outputDiv.innerHTML += "<br>Error occurred while recording: " + event.error;
-                recognition.stop();
-            };
-
-            recognition.onend = function() {
-                outputDiv.innerHTML += "<br>Recorded: " + transcript;
-
-                fetch('/save_transcript', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({text: transcript}),
-                });
-
-                transcript = ""; // Reset transcript for next recording
-            };
-        });
-    </script>
+    <script src="static/transcript.js"></script>
 </body>
 </html>
